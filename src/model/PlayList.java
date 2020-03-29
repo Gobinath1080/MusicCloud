@@ -40,8 +40,9 @@ public class PlayList<T extends Track> {
         if (isTrackListFull()) {
             throw new Error("Track list if full");
         }
-        trackList.add(track);
-        totalDuration += track.getDuration();
+        if (trackList.add(track)) {
+            totalDuration += track.getDuration();
+        }
         return true;
     }
 
@@ -56,8 +57,9 @@ public class PlayList<T extends Track> {
     }
 
     public boolean removeTrack(T track) {
-        trackList.remove(track);
-        totalDuration -= track.getDuration();
+        if (trackList.remove(track)) {
+            totalDuration -= track.getDuration();
+        }
         return true;
     }
 

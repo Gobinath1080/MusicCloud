@@ -47,6 +47,9 @@ class PlayListTest {
         trackList.add(new MockTrack(10, "Song10", 20.00f));
         trackList.add(new MockTrack(11, "Song11", 15.00f));
         playList.addTracks(trackList);
+        playList.removeTracks(trackList);
+        assertEquals(20f, playList.getDuration());
+        playList.addTracks(trackList);
         assertEquals(85f, playList.getDuration());
         playList.removeTrack(new MockTrack(1, "Song1", 20));
         assertEquals(65f, playList.getDuration());
