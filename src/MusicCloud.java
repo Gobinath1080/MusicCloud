@@ -1,3 +1,5 @@
+import io.reactivex.rxjava3.core.Observable;
+
 import java.util.List;
 
 /**
@@ -46,6 +48,6 @@ public interface MusicCloud {
      * @param playListId playlist id of the user.
      * @return the total duration of tracks in  <code>playListId</code>
      */
-    float getDuration(int userId, int playListId);
+    Observable<Float> getDuration(int userId, int playListId);
 
 }

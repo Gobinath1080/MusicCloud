@@ -1,6 +1,7 @@
 package db.mock;
 
 import db.Database;
+import io.reactivex.rxjava3.core.Observable;
 import model.PlayList;
 import model.Track;
 import model.User;
@@ -8,7 +9,9 @@ import model.User;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Mock database implementation.
+ */
 public class MockDatabase implements Database {
 
     // Cache should  be replaced with InMemory database list Memcached or Redis.
@@ -21,16 +24,20 @@ public class MockDatabase implements Database {
         this.playListCache = new HashMap<>();
     }
 
-    public PlayList<Track> getPlayList(int userId, int playListId) {
-        if (playListCache.get(userId) != null && playListCache.get(userId).get(playListId) != null) {
-            return playListCache.get(userId).get(playListId);
-        }
-        User user = mockDataSource.getUser(userId);
-        PlayList<Track> playList = mockDataSource.getPlayLst(playListId);
-        if (user != null && playList != null) {
-            cachePlayList(userId, playListId, playList);
-        }
-        return playList;
+    public Observable<PlayList<Track>> getPlayList(int userId, int playListId) {
+        return Observable.create(emitter -> {
+            if (playListCache.get(userId) != null && playListCache.get(userId).get(playListId) != null) {
+                emitter.onNext(playListCache.get(userId).get(playListId));
+                return;
+            }
+            User user = mockDataSource.getUser(userId);
+            PlayList<Track> playList = mockDataSource.getPlayLst(playListId);
+            if (user != null && playList != null) {
+                cachePlayList(userId, playListId, playList);
+            }
+            emitter.onNext(playList);
+        });
+
     }
 
     private void cachePlayList(int userId, int playListId, PlayList playList) {
@@ -40,8 +47,10 @@ public class MockDatabase implements Database {
         playListCache.get(userId).put(playListId, playList);
     }
 
-    public Track getTrack(int trackId) {
-        return mockDataSource.getTrack(trackId);
+    public Observable<Track> getTrack(int trackId) {
+        return Observable.create(emitter -> {
+            emitter.onNext(mockDataSource.getTrack(trackId));
+        });
     }
 
     public void updateDB() {

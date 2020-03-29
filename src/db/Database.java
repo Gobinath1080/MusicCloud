@@ -1,5 +1,6 @@
 package db;
 
+import io.reactivex.rxjava3.core.Observable;
 import model.PlayList;
 import model.Track;
 
@@ -10,11 +11,11 @@ public interface Database {
      * @param playListId unique playlist id.
      * @return <code>PlayList</code> of the user.
      */
-    PlayList<Track> getPlayList(int userId, int playListId);
+    Observable<PlayList<Track>> getPlayList(int userId, int playListId);
 
     /**
      * @param trackId unique track id.
      * @return <code>Track</code> object
      */
-    public Track getTrack(int trackId);
+    Observable<Track> getTrack(int trackId);
 }
